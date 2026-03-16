@@ -6,7 +6,7 @@ The hot path of the system is repeated spell execution through `Mage.cast_spell(
 
 ## Performance Budget
 
-- Throughput target: at least **X** spell executions per second on the development machine.
+- Throughput target: at least 100,000 spell executions per second on the development machine.
 
 ## Benchmark Methodology
 
