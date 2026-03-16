@@ -2,10 +2,9 @@ from abc import ABC, abstractmethod
 
 
 class Prototype(ABC):
-    """
-    Prototype interface that allows cloning objects.
-    """
+    """Prototype interface that allows cloning objects."""
 
     @abstractmethod
     def clone(self):
-        pass
+        raise NotImplementedError
+

@@ -1,36 +1,45 @@
 # ADR-002: Pattern Composition
 
 ## Status
+
 Accepted
 
 ## Context
 
-The combat system must support flexible spell behavior, dynamic spell upgrades, and efficient character creation.
-
-Using multiple design patterns allows the system to remain modular and extensible.
+The combat system must support reusable character templates, interchangeable spell behaviors, and runtime spell enhancement without tightly coupling these concerns into a single class hierarchy.
 
 ## Decision
 
-Three Gang of Four design patterns were used:
+The system uses exactly three GoF design patterns:
 
-Prototype
+### Prototype
 
-Used for cloning character templates such as Mage and Monster. This allows efficient creation of multiple instances.
+Used to clone reusable character templates such as `Mage` and `Monster`.
 
-Strategy
+### Strategy
 
-Used for defining spell behaviors. Different strategies such as ShortRangeSpell and LongRangeSpell implement the same interface.
+Used to define interchangeable spell behaviors such as `ShortRangeSpell`, `LongRangeSpell`, and `BarrageSpell`.
 
-Decorator
+### Decorator
 
-Used to dynamically modify spell behavior. For example, SpellBoostDecorator adds additional damage without modifying the base Mage class.
+Used to dynamically modify spell behavior through `SpellBoostDecorator` without modifying the base `Mage` class.
+
+These patterns are used together:
+
+- Prototype creates reusable combat entities
+- Strategy defines how spells behave at runtime
+- Decorator enhances selected spell execution dynamically
 
 ## Consequences
 
-Advantages:
-- Flexible system architecture
-- Easy addition of new spells
-- Separation of responsibilities
+### Advantages
 
-Disadvantages:
-- Additional classes increase system complexity
+- Clear separation of responsibilities
+- Easy addition of new spell types
+- Easy reuse of entity templates
+- Runtime behavior can be extended without modifying core classes
+
+### Disadvantages
+
+- More classes and indirection
+- Slightly higher conceptual complexity than a simpler inheritance-only design

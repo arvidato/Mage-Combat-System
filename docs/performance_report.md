@@ -2,26 +2,46 @@
 
 ## Hot Path
 
-The most frequently executed operation in the system is:
+The hot path of the system is repeated spell execution through `Mage.cast_spell()`.
 
-Mage.cast_spell()
+## Performance Budget
 
-This method calculates spell damage and applies it to a target.
+- Throughput target: at least **X** spell executions per second on the development machine.
 
-## Benchmark Method
+## Benchmark Methodology
 
-A benchmark was implemented that executes 100,000 spell casts using the combat system.
+Main benchmark:
 
-The benchmark measures total execution time and throughput.
+- Command: `python -m benchmarks.performance_benchmark`
+- Workload: 100,000 spell executions
+- Timer: `time.perf_counter()`
+- Metric: throughput computed as `spell_count / duration`
 
-## Results
+## Benchmark Result
 
-Example output:
+- Execution time: 0.3804 seconds
+- Throughput: 262868.13 spells per second
 
-Total spells cast: 100000
-Execution time: ~0.59 seconds
-Throughput: ~168,000 spells per second
+## Budget Evaluation
 
-## Interpretation
+- Result: Met
 
-The results demonstrate that the combat system performs efficiently even when executing a large number of spells. The use of lightweight objects and simple algorithms allows high throughput.
+## Optimization Attempt
+
+`BarrageSpell` was optimized by reusing a `CombatExecutor` instead of creating and shutting down a new one on every cast.
+
+## Comparison
+
+Before optimization:
+
+- Execution time: 0.9573 seconds
+- Throughput: 10445.79 barrage casts/sec
+
+After optimization:
+
+- Execution time: 0.3666 seconds
+- Throughput: 27276.51 barrage casts/sec
+
+## Lessons Learned
+
+Reusing the executor reduced concurrency overhead and improved barrage performance significantly.

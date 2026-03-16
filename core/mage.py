@@ -1,28 +1,34 @@
-from core.character import Character
-from core.strategy import SpellStrategy
-from core.prototype import Prototype
 import copy
+import threading
+
+from core.character import Character
+from core.prototype import Prototype
+from core.strategy import SpellStrategy
 
 
 class Mage(Character, Prototype):
-    def __init__(self, name: str, health: int, spell_power: int, strategy: SpellStrategy):
+    def __init__(
+        self, name: str, health: int, spell_power: int, strategy: SpellStrategy
+    ):
         self.name = name
         self.health = health
         self.spell_power = spell_power
         self.strategy = strategy
+        self._lock = threading.Lock()
 
-    def cast_spell(self, target: Character) -> None:
-        damage = self.strategy.calculate_spell_power(self)
-        target.take_damage(damage)
+    def cast_spell(self, target: Character) -> int:
+        return self.strategy.cast(self, target)
 
     def take_damage(self, amount: int) -> None:
-        self.health -= amount
+        with self._lock:
+            self.health -= amount
 
     def is_alive(self) -> bool:
         return self.health > 0
 
     def __repr__(self):
         return f"{self.name}(HP={self.health}, SP={self.spell_power})"
-    
+
     def clone(self):
-        return copy.deepcopy(self)
+        return Mage(self.name, self.health, self.spell_power, self.strategy)
+

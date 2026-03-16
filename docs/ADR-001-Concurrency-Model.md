@@ -1,6 +1,7 @@
 # ADR-001: Concurrency Model
 
 ## Status
+
 Accepted
 
 ## Context
@@ -22,10 +23,12 @@ To ensure thread safety, a lock is used when updating shared metrics.
 ## Consequences
 
 Advantages:
+
 - Controlled thread management
 - Simple implementation
 - Easy testing of concurrent behavior
 
 Disadvantages:
+
 - Slight overhead from thread management
 - Requires synchronization for shared resources

@@ -1,6 +1,8 @@
+import copy
+import threading
+
 from core.character import Character
 from core.prototype import Prototype
-import copy
 
 
 class Monster(Character, Prototype):
@@ -8,18 +10,23 @@ class Monster(Character, Prototype):
         self.name = name
         self.health = health
         self.attack_power = attack_power
+        self._lock = threading.Lock()
 
-    def cast_spell(self, target: Character) -> None:
-        target.take_damage(self.attack_power)
+    def cast_spell(self, target: Character) -> int:
+        damage = self.attack_power
+        target.take_damage(damage)
+        return damage
 
     def take_damage(self, amount: int) -> None:
-        self.health -= amount
+        with self._lock:
+            self.health -= amount
 
     def is_alive(self) -> bool:
         return self.health > 0
 
     def __repr__(self):
         return f"{self.name}(HP={self.health}, ATK={self.attack_power})"
-    
+
     def clone(self):
-        return copy.deepcopy(self)
+        return Monster(self.name, self.health, self.attack_power)
+

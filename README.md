@@ -1,144 +1,86 @@
 # Design Patterns Combat System Prototype
 
-## Overview
+## Problem Statement
 
-This project implements a small combat simulation system using three Gang of Four design patterns:
+Many games require flexible combat systems that support different abilities, temporary upgrades, reusable enemy templates, and scalable execution. This project demonstrates how design patterns can be used to build a modular and extensible combat system.
 
-- Prototype
-- Strategy
-- Decorator
+## Scope
 
-The system simulates a mage casting spells on monsters while supporting concurrency, performance measurement, and automated testing.
+Included:
 
----
+- Text-based combat demo
+- Mage and monster combat entities
+- Runtime-selectable spell behaviors
+- Temporary spell enhancement using a decorator
+- Character cloning through templates
+- Bounded concurrency for spell execution
+- Unit and integration tests
+- Performance benchmarking
 
-# Problem Statement
+Not included:
 
-Many games require flexible combat systems that support multiple abilities, upgrades, and enemy spawning. This project demonstrates how design patterns can be used to build a modular and extensible combat system.
+- GUI
+- Networking
+- Database/storage
+- Full game engine features
 
----
+## Constraints
 
-# Design Patterns Used
+- Exactly three GoF patterns are used
+- Python implementation
+- Bounded concurrency using a fixed-size thread pool
+- Shared state must be protected where needed
+- In-memory execution only
 
-## Prototype Pattern
-Used to clone character templates such as monsters or mages.
+## Quickstart
 
-Example:
+Build / setup:
 
-skeleton_template = Monster("Skeleton", 50, 5)
-
-skeleton1 = skeleton_template.clone()
-
-This allows efficient creation of many enemies.
-
----
-
-## Strategy Pattern
-Encapsulates different spell behaviors.
-
-Example strategies:
-
-- ShortRangeSpell
-- LongRangeSpell
-
-The Mage delegates spell damage calculation to the strategy object.
-
----
-
-## Decorator Pattern
-Allows dynamic modification of spell behavior.
-
-Example decorator:
-
-- SpellBoostDecorator
-
-Decorators wrap characters to add spell modifiers without modifying the base Mage class.
-
----
-
-# Concurrency Model
-
-The system uses a bounded thread pool to execute spell attacks concurrently.
-
-Key components:
-
-- ThreadPoolExecutor
-- CombatExecutor
-- MetricsRegistry
-
-Thread safety is ensured using locks to protect shared resources.
-
----
-
-# Performance Measurement
-
-The hot path of the system is:
-
-Mage.cast_spell()
-
-Benchmark:
-
-100,000 spell executions
-
-Example result:
-
-Execution time: ~0.59 seconds  
-Throughput: ~168,000 spells per second
-
----
-
-# Running the Project
-
-Activate the virtual environment:
-
-source venv/bin/activate
-
-Run tests:
-
-pytest
-
-Run performance benchmark:
-
-python -m benchmarks.performance_benchmark
-
----
-
-# Test Coverage
-
-Coverage is measured using pytest-cov.
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
 
 Run:
 
+```bash
+python main.py
+```
+
+Test:
+
+```bash
+pytest
+```
+
+Coverage:
+
+```bash
 pytest --cov=core --cov=concurrency
+```
 
-Current coverage: ~86%
+Benchmark:
 
----
+```bash
+python -m benchmarks.performance_benchmark
+```
 
-# Project Structure
+## Pattern Map
 
-core/
-- character.py
-- mage.py
-- monster.py
-- strategy.py
-- decorator.py
-- prototype.py
+- Prototype → `core/prototype.py`, `Mage.clone()`, `Monster.clone()`
+- Strategy → `core/strategy.py`, spell selection in `Mage`
+- Decorator → `core/decorator.py`, `SpellBoostDecorator`
 
-concurrency/
-- combat_executor.py
-- metrics_registry.py
-- unsafe_metrics_registry.py
+## Interaction Diagram
 
-benchmarks/
-- performance_benchmark.py
+```text
+User -> main.py -> Mage
+              -> choose monster template -> clone monster
+              -> choose spell strategy
+Mage -> Strategy.cast(target)
+BarrageSpell -> CombatExecutor -> target.take_damage()
+SpellBoostDecorator -> wraps Mage.cast_spell()
+MetricsRegistry -> records shared combat metrics
+```
 
-tests/
-- unit tests
-- integration tests
-
----
-
-# Lessons Learned
-
-This project demonstrates how combining Prototype, Strategy, and Decorator enables flexible system design. The architecture allows new spells, modifiers, and entities to be added without modifying existing core classes.
