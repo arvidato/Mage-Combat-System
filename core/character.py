@@ -2,12 +2,8 @@ from abc import ABC, abstractmethod
 
 
 class Character(ABC):
-    """
-    Base interface for any entity that can participate in combat.
-    """
-
     @abstractmethod
-    def cast_spell(self, target: "Character") -> None:
+    def cast_spell(self, target: "Character") -> int:
         pass
 
     @abstractmethod
@@ -17,3 +13,4 @@ class Character(ABC):
     @abstractmethod
     def is_alive(self) -> bool:
         pass
+
